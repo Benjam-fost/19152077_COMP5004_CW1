@@ -3,6 +3,8 @@
 //
 
 #include "State.h"
+#include "strings.h"
+#include "wordwrap.h"
 
 /**
  * Current state of the game.
@@ -26,8 +28,15 @@ State::State(Room *startRoom) : currentRoom(startRoom) {};
  * @param target Pointer to the room to move to.
  */
 void State::goTo(Room *target) {
-    this->currentRoom = target;
-    this->announceLoc();
+    if (target != nullptr) {
+        this->currentRoom = target;
+        this->announceLoc();
+    }
+    else {
+        wrapOut(&badExit);      /* Output the "can't go there" message */
+        wrapEndPara();
+    }
+
 }
 
 /**

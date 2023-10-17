@@ -9,7 +9,7 @@
 #include <string>
 
 const std::string r1name = "Room 1";
-const std::string r1desc = "You are in room 1. It's really quite boring, but then, it's just for testing really. There's a passage to the north.";
+const std::string r1desc = "You are in room 1. It's really quite boring, but then, it's just for testing really. There's a passage to the North, South, East and West.";
 const std::string r2name = "Blue Room";
 const std::string r2desc = "You are in the blue room. It's blue. That's about all though. There's a passage to the south.";
 const std::string r3name = "Red Room";
