@@ -9,6 +9,7 @@
 #include <string>
 #include <forward_list>
 #include <list>
+#include "GameObject.h"
 
 using std::string;
 
@@ -25,18 +26,22 @@ class Room {
      */
     const string* description;
     /**
+      * List storing all objects in a room.
+      */
+    std::list<GameObject*> objects;
+    /**
      * Pointers to rooms from this one.
      */
-    Room* north;
-    Room* south;
-    Room* east;
-    Room* west;
+   Room* north;
+   Room* south;
+   Room* east;
+   Room* west;
 public:
-    /**
-     * Constructs a new Room.
-     * @param _name Name of the room.
-     * @param _desc Description of the room.
-     */
+   /**
+    * Constructs a new Room.
+    * @param _name Name of the room.
+    * @param _desc Description of the room.
+    */
     Room(const string *_name, const string *_desc);
 
     /**
@@ -49,7 +54,7 @@ public:
      * in standard format.
      */
     void describe() const;
-
+    void displayObjects() const;
     /**
      * List storing all rooms that have been registered via addRoom().
      */
@@ -62,7 +67,6 @@ public:
      */
     static Room* addRoom(const string* _name, const string* _desc);
     static void addRoom(Room* room);
-
 
     Room* getNorth() const;
     Room* getSouth() const;

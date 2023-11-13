@@ -1,0 +1,21 @@
+# ninja log v5
+27	841	7215467309898560	CMakeFiles/textadv.dir/State.cpp.obj	e6e952ac5397cb35
+1	1287	7215467314402577	CMakeFiles/textadv.dir/main.cpp.obj	9a47228d822245c7
+9	901	7215467310542686	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+15	2732	7215467328863765	CMakeFiles/textadv.dir/wordwrap.cpp.obj	4c48b78a7dac5a43
+2735	2955	7215467331037357	textadv.exe	b4a19e2043a0a99a
+32	383	7215522123277054	CMakeFiles/textadv.dir/GameObject.cpp.obj	9e5172345cbc875b
+383	620	7215522125561933	textadv.exe	5ef8af9febe9e85f
+96	687	7216141545902631	CMakeFiles/textadv.dir/GameObject.cpp.obj	9e5172345cbc875b
+77	731	7216141546362283	CMakeFiles/textadv.dir/State.cpp.obj	e6e952ac5397cb35
+67	823	7216141547280578	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+49	1203	7216141551069023	CMakeFiles/textadv.dir/main.cpp.obj	9a47228d822245c7
+1203	1551	7216141554512138	textadv.exe	5ef8af9febe9e85f
+5	401	7216141842842933	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+401	594	7216141844720802	textadv.exe	5ef8af9febe9e85f
+8	409	7216142017800189	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+409	645	7216142020070879	textadv.exe	5ef8af9febe9e85f
+5	439	7216142216606648	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+440	701	7216142219087012	textadv.exe	5ef8af9febe9e85f
+6	456	7216144357937083	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+457	662	7216144359913802	textadv.exe	5ef8af9febe9e85f

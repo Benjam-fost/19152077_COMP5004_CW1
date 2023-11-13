@@ -4,12 +4,14 @@
 
 #ifndef TEXTADV_STATE_H
 #define TEXTADV_STATE_H
+#include "GameObject.h"
 
 
 #include "Room.h"
 
 class State {
     Room *currentRoom;
+    std::list<GameObject*> inventory;
 public:
     explicit State(Room *startRoom);
     void goTo(Room *target);

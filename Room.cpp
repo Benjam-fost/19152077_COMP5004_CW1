@@ -4,11 +4,15 @@
 
 #include "Room.h"
 #include "wordwrap.h"
+#include "GameObject.h"
 
 /**
  * Stores a static list of all rooms.
  */
 std::list<Room*> Room::rooms;
+/**
+ * Stores a static list of all objects in room.
+ */
 
 /**
  * Room default constructor.
@@ -16,7 +20,9 @@ std::list<Room*> Room::rooms;
  * @param _desc Room's description.
  */
 Room::Room(const string* _name, const string *_desc) :
-        name(_name), description(_desc), north(nullptr), south(nullptr), east(nullptr), west(nullptr) {};
+        name(_name), description(_desc), north(nullptr), south(nullptr), east(nullptr), west(nullptr) {
+
+};
 
 /**
  * Remove destroyed rooms from the static list.
@@ -33,6 +39,20 @@ void Room::describe() const {
     wrapEndPara();
     wrapOut(this->description);
     wrapEndPara();
+    displayObjects();
+    wrapEndPara();
+}
+
+void Room::displayObjects() const{
+    if (!objects.empty()) {
+        printf("Objects you can see:");
+        wrapEndPara();
+        for (GameObject *object: objects) {
+            wrapOut(object->getName());
+            wrapEndPara();
+        }
+    }
+    else { printf("You see no objects."); wrapEndPara();}
 }
 
 /**
