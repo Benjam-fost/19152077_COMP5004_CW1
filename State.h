@@ -4,6 +4,8 @@
 
 #ifndef TEXTADV_STATE_H
 #define TEXTADV_STATE_H
+
+#include <cstdint>
 #include "GameObject.h"
 
 
@@ -17,6 +19,7 @@ public:
     void goTo(Room *target);
     void announceLoc() const;
     Room* getCurrentRoom() const;
+    void displayInventory() const;
 };
 
 

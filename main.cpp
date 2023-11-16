@@ -58,6 +58,10 @@ void initState() {
     currentState = new State(Room::rooms.front());
 }
 
+void getObject(const string *name) {
+
+}
+
 /**
  * The main game loop.
  */
@@ -67,6 +71,7 @@ void gameLoop() {
         /* Ask for a command. */
         bool commandOk = false;
         inputCommand(&commandBuffer);
+        uint8_t buffLength = commandBuffer.length();
 
         /* The first word of a command would normally be the verb. The first word is the text before the first
          * space, or if there is no space, the whole string. */
@@ -74,29 +79,57 @@ void gameLoop() {
 
         /* We could copy the verb to another string but there's no reason to, we'll just compare it in place. */
         /* Command to go north. */
-        if ((commandBuffer.compare(0,endOfVerb,"north") == 0) || (commandBuffer.compare(0,endOfVerb,"n") == 0)) {
+
+        if ((commandBuffer.compare(0,buffLength,"north") == 0) || (commandBuffer.compare(0, endOfVerb, "n") == 0)) {
             commandOk = true; /* Confirm command has been handled */
             Room *northRoom = currentState->getCurrentRoom()->getNorth(); /* Gets room */
             currentState->goTo(northRoom); /* Sets room, input validation in State.cpp, line 31 onwards */
         }
-        else if ((commandBuffer.compare(0,endOfVerb,"south") == 0) || (commandBuffer.compare(0,endOfVerb,"s") == 0)) {
+        else if ((commandBuffer.compare(0, endOfVerb, "south") == 0) || (commandBuffer.compare(0, endOfVerb, "s") == 0)) {
             commandOk = true; /* Confirm command has been handled */
             Room *southRoom = currentState->getCurrentRoom()->getSouth(); /* Gets room */
             currentState->goTo(southRoom);
         }
-        else if ((commandBuffer.compare(0,endOfVerb,"east") == 0) || (commandBuffer.compare(0,endOfVerb,"e") == 0)) {
+        else if ((commandBuffer.compare(0, endOfVerb, "east") == 0) || (commandBuffer.compare(0, endOfVerb, "e") == 0)) {
             commandOk = true;
             Room *eastRoom = currentState->getCurrentRoom()->getEast();
             currentState->goTo(eastRoom);
         }
-        else if ((commandBuffer.compare(0,endOfVerb,"west") == 0) || (commandBuffer.compare(0,endOfVerb,"w") == 0)) {
+        else if ((commandBuffer.compare(0, endOfVerb, "west") == 0) || (commandBuffer.compare(0, endOfVerb, "w") == 0)) {
             commandOk = true;
             Room *westRoom = currentState->getCurrentRoom()->getWest();
             currentState->goTo(westRoom);
         }
+        /*
+         * Implement std::map<string:Room>
+         * int8_t x and int8_t y in State
+         * refer to email.
+        */
+         switch(1) {
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+        /**
+         * Gets an object and puts it into State::inventory, removing it from the Room.
+         * Checks if the user has entered an object.
+         * @param object Pointer to the target object.
+         */
+        if ((commandBuffer.compare(0, endOfVerb, "get") == 0) && endOfVerb != buffLength) {
+            string object = commandBuffer.substr(endOfVerb,buffLength);
+
+        }
+        if ((commandBuffer.compare(0, endOfVerb, "drop") == 0)) {}
+        if ((commandBuffer.compare(0, endOfVerb, "examine") == 0)) {}
+        /**
+         * Calls a function to display the player inventory.
+         * Outputs a message if inventory is empty.
+         */
+        if ((commandBuffer.compare(0, endOfVerb, "inventory") == 0)) {commandOk = true; currentState->displayInventory();}
 
         /* Quit command */
-        if ((commandBuffer.compare(0,endOfVerb,"quit") == 0) || (commandBuffer.compare(0,endOfVerb,"exit") == 0)) {
+        if ((commandBuffer.compare(0, endOfVerb, "quit") == 0)) {
             commandOk = true;
             gameOver = true;
         }

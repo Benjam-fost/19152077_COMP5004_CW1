@@ -19,6 +19,7 @@ const std::string r4desc = "You are in the green room. It's green. That's about 
 const std::string r5name = "Purple Room";
 const std::string r5desc = "You are in the purple room. It's purple. That's about all though, except from some fluffy pillows. There's a passage to the east.\"";
 
+const std::string emptyInventory = "Your inventory is empty";
 const std::string badExit = "You can't go that way.";
 const std::string badCommand = "I don't understand that.";
 

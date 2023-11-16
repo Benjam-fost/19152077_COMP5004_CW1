@@ -46,3 +46,13 @@ void State::goTo(Room *target) {
 Room* State::getCurrentRoom() const {
     return this->currentRoom;
 }
+
+void State::displayInventory() const {
+    if (!inventory.empty()) {
+        for (GameObject *object: inventory) {
+            wrapOut(object->getName());
+            wrapEndPara();
+        }
+    }
+    else {wrapOut(&emptyInventory); wrapEndPara();}
+}
