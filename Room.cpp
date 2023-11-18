@@ -115,3 +115,22 @@ void Room::setEast(Room* _east) {
 void Room::setWest(Room* _west) {
     this->west = _west;
 }
+
+void Room::removeRoomObject(string* key) {
+    auto ptr = this->objects.begin();
+    while (ptr != this->objects.end()) {
+        if ((*ptr)->getKeyword() == key) {
+            this->objects.erase(ptr);
+        }
+        ptr++;
+    }
+
+}
+
+std::list<GameObject*> Room::getObjects() const {
+    return objects;
+}
+
+void Room::addObject(GameObject *object) {
+    objects.push_back(object);
+}

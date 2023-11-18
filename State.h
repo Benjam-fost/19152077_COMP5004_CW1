@@ -13,13 +13,20 @@
 
 class State {
     Room *currentRoom;
+protected:
     std::list<GameObject*> inventory;
 public:
     explicit State(Room *startRoom);
     void goTo(Room *target);
     void announceLoc() const;
-    Room* getCurrentRoom() const;
+    Room* getCurrentRoom();
+    std::list<GameObject*> &getInventory();
     void displayInventory() const;
+
+    void removeInvObject(string* key);
+    void addObject(GameObject* object);
+
+    void removeObject(GameObject *object);
 };
 
 

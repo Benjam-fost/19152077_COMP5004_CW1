@@ -68,6 +68,7 @@ public:
     static Room* addRoom(const string* _name, const string* _desc);
     static void addRoom(Room* room);
 
+    std::list<GameObject*> getObjects() const;
     Room* getNorth() const;
     Room* getSouth() const;
     Room* getEast() const;
@@ -76,6 +77,9 @@ public:
     void setSouth(Room* _south);
     void setEast(Room* _east);
     void setWest(Room* _west);
+
+    void addObject(GameObject* object);
+    void removeRoomObject(string *key);
 };
 
 #endif //TEXTADV_ROOM_H

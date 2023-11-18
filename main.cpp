@@ -1,13 +1,10 @@
 
 #include <iostream>
-#include <iomanip>
 #include <memory>
-#include <iterator>
-#include <vector>
 #include <forward_list>
+#include "State.h"
 #include "Room.h"
 #include "wordwrap.h"
-#include "State.h"
 #include "strings.h"
 
 
@@ -49,6 +46,11 @@ void initRooms() {
     r3->setNorth(r1);
     r4->setWest(r1);
     r5->setEast(r1);
+    r1->addObject(new GameObject(&largeCupName,&largeCupKey,&largeCupDesc));
+    r1->addObject(new GameObject(&silverSpoonName,&silverSpoonKey,&silverSpoonDesc));
+    r4->addObject(new GameObject(&largeCupName,&largeCupKey,&largeCupDesc));
+    r5->addObject(new GameObject(&shinyBowlName,&shinyBowlKey,&shinyBowlDesc));
+    r5->addObject(new GameObject(&fluffyPillowName,&fluffyPillowKey,&fluffyPillowDesc));
 }
 
 /**
@@ -58,8 +60,28 @@ void initState() {
     currentState = new State(Room::rooms.front());
 }
 
-void getObject(const string *name) {
-
+/**
+ * Finds a GameObject using its keyword.
+ * returns nullptr if not found.
+ * @param key The keyword associated with the target object.
+ * @param flag A list of bool flags for error checking, refer to declaration for details.
+ * @return GameObject
+ */
+static GameObject* findObject(string *key, bool *flag) {
+    GameObject* found = nullptr;
+    for (GameObject* object : currentState->getInventory()) {
+        if ((*object->getKeyword()) == (*key)) {
+            found = object;
+            flag[1] = true; flag[2] = false;
+        }
+    }
+    for (GameObject* object : currentState->getCurrentRoom()->getObjects()) {
+        if ((*object->getKeyword()) == (*key)) {
+            found = object;
+            flag[0] = true; flag[2] = false;
+        }
+    }
+    return found;
 }
 
 /**
@@ -67,16 +89,29 @@ void getObject(const string *name) {
  */
 void gameLoop() {
     bool gameOver=false;
+    /**
+     * Bool array for error reporting in findObject().
+     * flag[0] indicates if the GameObject found is in currentRoom.
+     * flag[1] indicates if the GameObject found is in inventory.
+     * flag[2] indicates if the GameObject is a nullptr/does not exist.
+     */
     while (!gameOver) {
         /* Ask for a command. */
         bool commandOk = false;
+        bool flag[3] {false, false, true};
         inputCommand(&commandBuffer);
         uint8_t buffLength = commandBuffer.length();
+        string key;
+        GameObject *object;
 
         /* The first word of a command would normally be the verb. The first word is the text before the first
          * space, or if there is no space, the whole string. */
         auto endOfVerb = static_cast<uint8_t>(commandBuffer.find(' '));
 
+        if (endOfVerb < buffLength) {
+            key = commandBuffer.substr(endOfVerb+1, buffLength);
+            object = findObject(&key, flag);
+        }
         /* We could copy the verb to another string but there's no reason to, we'll just compare it in place. */
         /* Command to go north. */
 
@@ -104,29 +139,81 @@ void gameLoop() {
          * Implement std::map<string:Room>
          * int8_t x and int8_t y in State
          * refer to email.
-        */
+
          switch(1) {
             case 1:
                 break;
             case 2:
                 break;
         }
-        /**
-         * Gets an object and puts it into State::inventory, removing it from the Room.
-         * Checks if the user has entered an object.
-         * @param object Pointer to the target object.
          */
-        if ((commandBuffer.compare(0, endOfVerb, "get") == 0) && endOfVerb != buffLength) {
-            string object = commandBuffer.substr(endOfVerb,buffLength);
-
+        /**
+         * Removes an object from currentRoom and adds it into inventory.
+         * Checks if the user has entered an object and where the object is.
+         * Displays unique error messages depending on State and user input using a bool array, flag[].
+         */
+        if ((commandBuffer.compare(0, endOfVerb, "get") == 0)) {
+            commandOk = true;
+            if (flag[2]) {
+                wrapOut(&noObject); wrapEndPara();
+            }
+            else if (flag[1]) {
+                wrapOut(&inInventory); wrapEndPara();
+            }
+            else if (!flag[0]) {
+                wrapOut(&notInRoom); wrapEndPara();
+            }
+            else {
+                currentState->addObject(object);
+                currentState->getCurrentRoom()->removeRoomObject(&key);
+                wrapOut(&got); wrapEndPara();
+            }
         }
-        if ((commandBuffer.compare(0, endOfVerb, "drop") == 0)) {}
-        if ((commandBuffer.compare(0, endOfVerb, "examine") == 0)) {}
+
+        /**
+         * Removes an object from inventory and adds it to the Room.
+         * Checks if the user has entered an object and where the object is.
+         * Displays unique error messages depending on State and user input.
+         */
+        else if ((commandBuffer.compare(0, endOfVerb, "drop") == 0)) {
+            commandOk = true;
+            if (flag[2]) {
+                wrapOut(&noObject);
+                wrapEndPara();
+            }
+            else if (flag[0]) {
+                wrapOut(&inRoom); wrapEndPara();
+            }
+            else if (!flag[1]) {
+                wrapOut(&notInInventory); wrapEndPara();
+            }
+            else {
+                currentState->removeInvObject(&key);
+                currentState->getCurrentRoom()->addObject(object);
+                wrapOut(&dropped); wrapEndPara();
+            }
+        }
+
+        /**
+         * Calls a function to examine an object.
+         * Outputs the description of the object with the keyword entered.
+         */
+        else if ((commandBuffer.compare(0, endOfVerb, "examine") == 0)) {
+            commandOk = true;
+            wrapEndPara();
+            if (!flag[2]) {
+                wrapOut(object->getName());
+                wrapEndPara();
+                object->describe();
+            }
+            else {wrapOut(&noObject); wrapEndPara();}
+        }
+
         /**
          * Calls a function to display the player inventory.
          * Outputs a message if inventory is empty.
          */
-        if ((commandBuffer.compare(0, endOfVerb, "inventory") == 0)) {commandOk = true; currentState->displayInventory();}
+        else if ((commandBuffer.compare(0, endOfVerb, "inventory") == 0)) {commandOk = true; currentState->displayInventory();}
 
         /* Quit command */
         if ((commandBuffer.compare(0, endOfVerb, "quit") == 0)) {

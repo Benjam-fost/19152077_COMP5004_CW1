@@ -5,6 +5,7 @@
 #include "State.h"
 #include "strings.h"
 #include "wordwrap.h"
+#include <iterator>
 
 /**
  * Current state of the game.
@@ -43,8 +44,8 @@ void State::goTo(Room *target) {
  * Return a pointer to the current room.
  * @return Pointer to the current room.
  */
-Room* State::getCurrentRoom() const {
-    return this->currentRoom;
+Room* State::getCurrentRoom() {
+    return currentRoom;
 }
 
 void State::displayInventory() const {
@@ -56,3 +57,40 @@ void State::displayInventory() const {
     }
     else {wrapOut(&emptyInventory); wrapEndPara();}
 }
+/**
+ * Gets the inventory list.
+ * @return inventory
+ */
+std::list<GameObject *> &State::getInventory() {
+    return inventory;
+}
+/**
+ * Adds an object to the inventory.
+ * @param object
+ */
+void State::addObject(GameObject* object) {
+    inventory.push_back(object);
+}
+
+//MUST TEST IF IT WORKKSSSSS!!!!! no clue
+void State::removeObject(GameObject* object) {
+    auto ptr = inventory.begin();
+    while (ptr != inventory.end()) {
+        if ((*ptr)->getKeyword() == object->getKeyword()) {
+            inventory.erase(ptr);
+        }
+        ptr++;
+    }
+
+}
+
+void State::removeInvObject(string* key) {
+    auto ptr = inventory.begin();
+    while (ptr != inventory.end()) {
+        if ((*ptr)->getKeyword() == key) {
+            inventory.erase(ptr);
+        }
+        ptr++;
+    }
+}
+

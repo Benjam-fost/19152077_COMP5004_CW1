@@ -30,20 +30,25 @@ public:
     ~GameObject();
 
     /**
-     * Outputs the name and description of the GameObject
+     * Outputs the name and description of the GameObject.
      * in standard format.
      */
     void describe() const;
-
     /**
-     * Creates a new GameObject with the given parameters and register it with the static list.
-     * @param _name Name of the GameObject.
-     * @param _desc Description of the GameObject.
+     * Returns the name of the object.
+     * @return name
      */
-    static GameObject* addGameObject(const string* _name, const string* _key, const string* _desc);
-    static void addGameObject(GameObject* object);
-
     const std::string* getName() const;
+    /**
+     * Returns the description of the object.
+     * @return description
+     */
+    const std::string* getDescription() const;
+    /**
+     * Returns the keyword of the object.
+     * @return keyword
+     */
+    const std::string* getKeyword() const;
 };
 
 

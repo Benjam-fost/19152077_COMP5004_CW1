@@ -3,28 +3,27 @@
 //
 
 #include "GameObject.h"
+#include "wordwrap.h"
 
-GameObject::GameObject(const string *_name, const string *_key, const string *_desc) : name(_name), keyword(_key), description(_desc) {
-    ;
-}
+
+GameObject::GameObject(const string *_name, const string *_key, const string *_desc) : name(_name), keyword(_key), description(_desc) {};
 
 GameObject::~GameObject() {
     printf("%s destroyed", name);
 }
 
 void GameObject::describe() const {
-    printf("%s", description);
-}
-
-GameObject *GameObject::addGameObject(const string *_name, const string *_key, const string *_desc) {
-
-    return nullptr;
-}
-
-void GameObject::addGameObject(GameObject *object) {
-
+    wrapOut(description); wrapEndPara();
 }
 
 const std::string* GameObject::getName() const {
     return name;
+}
+
+const std::string *GameObject::getDescription() const {
+    return description;
+}
+
+const std::string *GameObject::getKeyword() const {
+    return keyword;
 }
