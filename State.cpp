@@ -72,18 +72,10 @@ void State::addObject(GameObject* object) {
     inventory.push_back(object);
 }
 
-//MUST TEST IF IT WORKKSSSSS!!!!! no clue
-void State::removeObject(GameObject* object) {
-    auto ptr = inventory.begin();
-    while (ptr != inventory.end()) {
-        if ((*ptr)->getKeyword() == object->getKeyword()) {
-            inventory.erase(ptr);
-        }
-        ptr++;
-    }
-
+void State::removeInvObject(GameObject* object) {
+    inventory.remove(object);
 }
-
+/*
 void State::removeInvObject(string* key) {
     auto ptr = inventory.begin();
     while (ptr != inventory.end()) {
@@ -93,4 +85,4 @@ void State::removeInvObject(string* key) {
         ptr++;
     }
 }
-
+*/

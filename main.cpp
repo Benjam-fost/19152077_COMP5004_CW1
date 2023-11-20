@@ -165,7 +165,7 @@ void gameLoop() {
             }
             else {
                 currentState->addObject(object);
-                currentState->getCurrentRoom()->removeRoomObject(&key);
+                currentState->getCurrentRoom()->removeRoomObject(object);
                 wrapOut(&got); wrapEndPara();
             }
         }
@@ -188,7 +188,7 @@ void gameLoop() {
                 wrapOut(&notInInventory); wrapEndPara();
             }
             else {
-                currentState->removeInvObject(&key);
+                currentState->removeInvObject(object);
                 currentState->getCurrentRoom()->addObject(object);
                 wrapOut(&dropped); wrapEndPara();
             }

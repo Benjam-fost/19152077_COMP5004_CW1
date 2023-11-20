@@ -80,6 +80,8 @@ public:
 
     void addObject(GameObject* object);
     void removeRoomObject(string *key);
+
+    void removeRoomObject(GameObject *object);
 };
 
 #endif //TEXTADV_ROOM_H

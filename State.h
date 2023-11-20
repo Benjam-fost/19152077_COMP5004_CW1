@@ -26,7 +26,7 @@ public:
     void removeInvObject(string* key);
     void addObject(GameObject* object);
 
-    void removeObject(GameObject *object);
+    void removeInvObject(GameObject *object);
 };
 
 

@@ -23,3 +23,7 @@
 531	703	7219790823194048	textadv.exe	5ef8af9febe9e85f
 5	392	7219798883711757	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
 393	567	7219798885406578	textadv.exe	5ef8af9febe9e85f
+61	1828	7221559507557043	CMakeFiles/textadv.dir/Room.cpp.obj	a504ebfdfa9cd95e
+165	1848	7221559507767204	CMakeFiles/textadv.dir/State.cpp.obj	e6e952ac5397cb35
+82	2079	7221559510119680	CMakeFiles/textadv.dir/main.cpp.obj	9a47228d822245c7
+2080	2584	7221559515085781	textadv.exe	5ef8af9febe9e85f
