@@ -10,6 +10,8 @@
  * Stores a static list of all rooms.
  */
 std::list<Room*> Room::rooms;
+
+std::set<GameObject*> Room::validObjects;
 /**
  * Stores a static list of all objects in room.
  */
@@ -65,6 +67,10 @@ Room* Room::addRoom(const string* _name, const string *_desc) {
     auto *newRoom = new Room(_name, _desc);
     Room::rooms.push_back(newRoom);
     return newRoom;
+}
+
+void Room::addValidObject(GameObject* object) {
+    Room::validObjects.insert(object);
 }
 
 /**
@@ -136,5 +142,15 @@ std::list<GameObject*> Room::getObjects() const {
 }
 
 void Room::addObject(GameObject *object) {
+    addValidObject(object);
     objects.push_back(object);
+}
+
+bool Room::isNotValid(string *key) {
+    for (GameObject* i : validObjects) {
+        if ((*i->getKeyword()) == (*key)) {
+            return false;
+        }
+    }
+    return true;
 }

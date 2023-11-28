@@ -9,6 +9,7 @@
 #include <string>
 #include <forward_list>
 #include <list>
+#include <set>
 #include "GameObject.h"
 
 using std::string;
@@ -59,6 +60,7 @@ public:
      * List storing all rooms that have been registered via addRoom().
      */
     static std::list<Room*> rooms;
+    static std::set<GameObject*> validObjects;
 
     /**
      * Creates a new Room with the given parameters and register it with the static list.
@@ -79,9 +81,10 @@ public:
     void setWest(Room* _west);
 
     void addObject(GameObject* object);
-    void removeRoomObject(string *key);
-
     void removeRoomObject(GameObject *object);
+
+    void addValidObject(GameObject *object);
+    static bool isNotValid(string *key);
 };
 
 #endif //TEXTADV_ROOM_H

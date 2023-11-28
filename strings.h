@@ -43,10 +43,11 @@ const std::string silverSpoonDesc = "A spoon made of solid silver.\nYou wonder i
 // ERROR MESSAGES
 const std::string inRoom = "The object is already in the room";
 const std::string notInRoom = "You could not find the object in the room.";
-const std::string inInventory = "You cannot get an object from within your inventory";
+const std::string inInventory = "You cannot carry any more of those";
 const std::string notInInventory = "You couldn't find the object within your inventory";
 const std::string emptyInventory = "Your inventory is empty.";
 const std::string noObject = "You don't know what you're looking for.";
+const std::string notFound = "You could not find the object here.";
 const std::string badExit = "You can't go that way.";
 const std::string badCommand = "I don't understand that.";
 

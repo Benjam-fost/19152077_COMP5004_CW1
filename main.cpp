@@ -81,6 +81,9 @@ static GameObject* findObject(string *key, bool *flag) {
             flag[0] = true; flag[2] = false;
         }
     }
+    if (flag[2]) {
+        flag[2] = Room::isNotValid(key);
+    }
     return found;
 }
 
@@ -154,15 +157,19 @@ void gameLoop() {
          */
         if ((commandBuffer.compare(0, endOfVerb, "get") == 0)) {
             commandOk = true;
-            if (flag[2]) {
-                wrapOut(&noObject); wrapEndPara();
+            if (!flag[2] && !flag[1] && !flag[0]) {
+                wrapOut(&notFound); wrapEndPara();
             }
-            else if (flag[1]) {
-                wrapOut(&inInventory); wrapEndPara();
+            else if (flag[2]) {
+                wrapOut(&noObject); wrapEndPara();
             }
             else if (!flag[0]) {
                 wrapOut(&notInRoom); wrapEndPara();
             }
+            else if (flag[1]) {
+                wrapOut(&inInventory); wrapEndPara();
+            }
+
             else {
                 currentState->addObject(object);
                 currentState->getCurrentRoom()->removeRoomObject(object);
