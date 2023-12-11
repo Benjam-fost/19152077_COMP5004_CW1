@@ -1,7 +1,9 @@
 
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <forward_list>
+#include <sstream>
 #include "State.h"
 #include "Room.h"
 #include "wordwrap.h"
@@ -13,6 +15,30 @@ using std::unique_ptr;
 
 string commandBuffer;
 State *currentState;
+string fileName = "autosave.csv";
+
+std::string encrypt(std::string data) {
+    int i = 0;
+    char temp;
+    while (i+1 < data.length()) {
+        temp = data[i+1];
+        data[i+1] = data[i];
+        data[i] = temp;
+        i += 2;
+    }
+    return data;
+}
+std::string decrypt(std::string data) {
+    int i = 0;
+    char temp;
+    while (i+1 < data.length()) {
+        temp = data[i];
+        data[i] = data[i+1];
+        data[i+1] = temp;
+        i += 2;
+    }
+    return data;
+}
 
 /**
  * Print out the command prompt then read a command into the provided string buffer.
@@ -46,11 +72,108 @@ void initRooms() {
     r3->setNorth(r1);
     r4->setWest(r1);
     r5->setEast(r1);
-    r1->addObject(new GameObject(&largeCupName,&largeCupKey,&largeCupDesc));
-    r1->addObject(new GameObject(&silverSpoonName,&silverSpoonKey,&silverSpoonDesc));
-    r4->addObject(new GameObject(&largeCupName,&largeCupKey,&largeCupDesc));
-    r5->addObject(new GameObject(&shinyBowlName,&shinyBowlKey,&shinyBowlDesc));
-    r5->addObject(new GameObject(&fluffyPillowName,&fluffyPillowKey,&fluffyPillowDesc));
+    r1->addRoomObject(new GameObject(&largeCupName, &largeCupKey, &largeCupDesc));
+    r1->addRoomObject(new GameObject(&silverSpoonName, &silverSpoonKey, &silverSpoonDesc));
+    r4->addRoomObject(new GameObject(&largeCupName, &largeCupKey, &largeCupDesc));
+    r5->addRoomObject(new GameObject(&shinyBowlName, &shinyBowlKey, &shinyBowlDesc));
+    r5->addRoomObject(new GameObject(&fluffyPillowName, &fluffyPillowKey, &fluffyPillowDesc));
+}
+
+void save() {
+    std::ofstream sFile(fileName);
+
+    if(sFile.is_open()) {
+        Room* room = currentState->getCurrentRoom();
+        sFile << encrypt((*room->getName())) << endl; // Saving currentRoom
+
+        int i = 1;
+        list<GameObject*> inv = currentState->getInventory();
+        for (GameObject *object : inv) { // Saving inventory
+            sFile << encrypt(*object->getKeyword());
+            if (i != inv.size()) {
+                sFile << ",";
+            }
+            else sFile << "\n";
+            i++;
+        }
+
+        list<Room*> rooms = Room::getRooms();
+        for (Room* r: rooms) { // Saving GameObjects in rooms
+            list<GameObject*> objects = r->getRoomObjects();
+            sFile << encrypt((*r->getName()));
+            if (!objects.empty()) {
+                for (GameObject *object: objects) {
+                    sFile << "," << encrypt((*object->getKeyword()));
+                }
+            }
+            sFile << endl;
+        }
+    }
+
+    if (sFile.good()) {
+        cout << "Game saved successfully" << endl;
+    }
+    else cout << "Error saving game" << endl;
+    sFile.close();
+}
+Room* findRoom(const string& name) {
+    list<Room*> list = Room::getRooms();
+    Room* room;
+    for (auto ptr = list.begin(); ptr != list.end(); ptr++) {
+        if (*(*ptr)->getName() == name) room = *ptr;
+    }
+    return room;
+
+    /*
+    Room* ptr;
+    for (Room* room : Room::getRooms()) {
+        if ((*room->getName()) == name) ptr = room;
+    }
+    return ptr;
+     */
+}
+
+bool load() {
+    string buffer;
+    std::ifstream lFile(fileName);
+
+    if (lFile.fail()) {
+        cout << "Invalid file: " << fileName << endl << endl;
+        return false;
+    }
+
+    if (lFile.is_open()) {
+        getline(lFile, buffer);
+        currentState = new State(findRoom(decrypt(buffer)));
+
+        getline(lFile, buffer);
+        istringstream iss(buffer);
+        while (getline(iss, buffer, ',')) {
+            buffer = decrypt(buffer);
+            for (GameObject *object: Room::getValidRoomObjects()) {
+                if ((*object->getKeyword()) == buffer) {
+                    currentState->addInvObject(object);
+                }
+            }
+        }
+
+        while (getline(lFile, buffer)) {
+            iss.clear(); iss.str(buffer);
+            getline(iss, buffer, ',');
+            Room* room = findRoom(decrypt(buffer));
+            room->clearObjects();
+            while (getline(iss, buffer, ',')) {
+                for (GameObject *object: Room::getValidRoomObjects()) {
+                    if ((*object->getKeyword()) == decrypt(buffer)) {
+                        room->addRoomObject(object);
+                    }
+                }
+            }
+        }
+        lFile.close();
+        return true;
+    }
+    else return false;
 }
 
 /**
@@ -75,7 +198,7 @@ static GameObject* findObject(string *key, bool *flag) {
             flag[1] = true; flag[2] = false;
         }
     }
-    for (GameObject* object : currentState->getCurrentRoom()->getObjects()) {
+    for (GameObject* object : currentState->getCurrentRoom()->getRoomObjects()) {
         if ((*object->getKeyword()) == (*key)) {
             found = object;
             flag[0] = true; flag[2] = false;
@@ -87,20 +210,48 @@ static GameObject* findObject(string *key, bool *flag) {
     return found;
 }
 
+void menu() {
+    bool chosen = false;
+    string temp;
+    char choice;
+    while (!chosen) {
+        printf("MAIN MENU:\n\n(S)tart new game   |   (L)oad game\n\n");
+        inputCommand(&temp);
+        choice = temp[0];
+        switch (choice) {
+            case 'S':
+            case 's':
+                printf("\nStarting new game\n\n");
+                return;
+            case 'L':
+            case 'l':
+                cout << "\n***LOAD***" << endl;
+                cout << "Enter the file name of your save file: ";
+                inputCommand(&fileName);
+                chosen = true;
+                if (!load()) printf("\nStarting new game\n");
+                break;
+            default:
+                printf("\nPlease enter:\nS to start a new game\nL to load a save file\n");
+        }
+    }
+}
+
 /**
  * The main game loop.
  */
 void gameLoop() {
     bool gameOver=false;
-    /**
-     * Bool array for error reporting in findObject().
-     * flag[0] indicates if the GameObject found is in currentRoom.
-     * flag[1] indicates if the GameObject found is in inventory.
-     * flag[2] indicates if the GameObject is a nullptr/does not exist.
-     */
+
     while (!gameOver) {
         /* Ask for a command. */
         bool commandOk = false;
+        /**
+         * Bool array for error reporting in findObject().
+         * flag[0] indicates if the GameObject found is in currentRoom.
+         * flag[1] indicates if the GameObject found is in inventory.
+         * flag[2] indicates if the GameObject is a nullptr/does not exist.
+         */
         bool flag[3] {false, false, true};
         inputCommand(&commandBuffer);
         uint8_t buffLength = commandBuffer.length();
@@ -138,18 +289,7 @@ void gameLoop() {
             Room *westRoom = currentState->getCurrentRoom()->getWest();
             currentState->goTo(westRoom);
         }
-        /*
-         * Implement std::map<string:Room>
-         * int8_t x and int8_t y in State
-         * refer to email.
 
-         switch(1) {
-            case 1:
-                break;
-            case 2:
-                break;
-        }
-         */
         /**
          * Removes an object from currentRoom and adds it into inventory.
          * Checks if the user has entered an object and where the object is.
@@ -171,7 +311,7 @@ void gameLoop() {
             }
 
             else {
-                currentState->addObject(object);
+                currentState->addInvObject(object);
                 currentState->getCurrentRoom()->removeRoomObject(object);
                 wrapOut(&got); wrapEndPara();
             }
@@ -196,7 +336,7 @@ void gameLoop() {
             }
             else {
                 currentState->removeInvObject(object);
-                currentState->getCurrentRoom()->addObject(object);
+                currentState->getCurrentRoom()->addRoomObject(object);
                 wrapOut(&dropped); wrapEndPara();
             }
         }
@@ -222,6 +362,26 @@ void gameLoop() {
          */
         else if ((commandBuffer.compare(0, endOfVerb, "inventory") == 0)) {commandOk = true; currentState->displayInventory();}
 
+
+        if ((commandBuffer.compare(0, endOfVerb, "save") == 0)) {
+            commandOk = true;
+            printf("\n***SAVE***\n");
+            printf("Please enter a file name: ");
+            inputCommand(&fileName);
+            save();
+        }
+        if ((commandBuffer.compare(0, endOfVerb, "load") == 0)) {
+            commandOk = true;
+            printf("\n***LOAD***\n");
+            printf("Please enter a file name: ");
+            inputCommand(&fileName);
+            if (load()) {
+                cout << endl << "Load successful" << endl;
+                currentState->announceLoc();
+            }
+            else cout << endl << "Error loading save file" << endl;
+        }
+
         /* Quit command */
         if ((commandBuffer.compare(0, endOfVerb, "quit") == 0)) {
             commandOk = true;
@@ -241,7 +401,11 @@ int main() {
     initWordWrap();
     initRooms();
     initState();
+    menu();
     currentState->announceLoc();
     gameLoop();
+    fileName = "autosave.csv";
+    save(); // This implements autosave functionality
+    // save() is implemented in gameLoop() also, which asks for filename
     return 0;
 }

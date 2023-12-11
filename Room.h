@@ -60,7 +60,7 @@ public:
      * List storing all rooms that have been registered via addRoom().
      */
     static std::list<Room*> rooms;
-    static std::set<GameObject*> validObjects;
+    static std::list<GameObject*> validRoomObjects;
 
     /**
      * Creates a new Room with the given parameters and register it with the static list.
@@ -70,7 +70,7 @@ public:
     static Room* addRoom(const string* _name, const string* _desc);
     static void addRoom(Room* room);
 
-    std::list<GameObject*> getObjects() const;
+    std::list<GameObject*> getRoomObjects() const;
     Room* getNorth() const;
     Room* getSouth() const;
     Room* getEast() const;
@@ -80,11 +80,17 @@ public:
     void setEast(Room* _east);
     void setWest(Room* _west);
 
-    void addObject(GameObject* object);
+    void addRoomObject(GameObject* object);
     void removeRoomObject(GameObject *object);
 
-    void addValidObject(GameObject *object);
+    static void addValidRoomObject(GameObject *object);
+    static std::list<GameObject*> getValidRoomObjects();
     static bool isNotValid(string *key);
+
+    const string *getName();
+    static std::list<Room*> getRooms();
+
+    void clearObjects();
 };
 
 #endif //TEXTADV_ROOM_H

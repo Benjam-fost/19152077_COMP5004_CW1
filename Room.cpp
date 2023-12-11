@@ -11,10 +11,11 @@
  */
 std::list<Room*> Room::rooms;
 
-std::set<GameObject*> Room::validObjects;
 /**
- * Stores a static list of all objects in room.
+ * Stores a static list of all objects that can be in a room.
  */
+std::list<GameObject*> Room::validRoomObjects;
+
 
 /**
  * Room default constructor.
@@ -22,15 +23,17 @@ std::set<GameObject*> Room::validObjects;
  * @param _desc Room's description.
  */
 Room::Room(const string* _name, const string *_desc) :
-        name(_name), description(_desc), north(nullptr), south(nullptr), east(nullptr), west(nullptr) {
-
-};
+        name(_name), description(_desc), north(nullptr), south(nullptr), east(nullptr), west(nullptr) {};
 
 /**
  * Remove destroyed rooms from the static list.
  */
 Room::~Room() {
     Room::rooms.remove(this);
+}
+
+const string* Room::getName() {
+    return name;
 }
 
 /**
@@ -69,8 +72,15 @@ Room* Room::addRoom(const string* _name, const string *_desc) {
     return newRoom;
 }
 
-void Room::addValidObject(GameObject* object) {
-    Room::validObjects.insert(object);
+void Room::addValidRoomObject(GameObject* object) {
+    bool found = false;
+    for (GameObject* obj : validRoomObjects) {
+        if ((*obj->getKeyword()) == (*object->getKeyword())) {
+            found = true;
+        }
+    }
+    if (!found) validRoomObjects.push_back(object);
+
 }
 
 /**
@@ -125,32 +135,35 @@ void Room::setWest(Room* _west) {
 void Room::removeRoomObject(GameObject *object) {
     objects.remove(object);
 }
-/*
-void Room::removeRoomObject(string* key) {
-    auto ptr = this->objects.begin();
-    while (ptr != this->objects.end()) {
-        if ((*ptr)->getKeyword() == key) {
-            this->objects.erase(ptr);
-        }
-        ptr++;
-    }
 
+void Room::clearObjects() {
+    while (!objects.empty()) {
+        auto ptr = objects.begin();
+        objects.erase(ptr);
+    }
 }
-*/
-std::list<GameObject*> Room::getObjects() const {
+std::list<GameObject*> Room::getRoomObjects() const {
     return objects;
 }
 
-void Room::addObject(GameObject *object) {
-    addValidObject(object);
+void Room::addRoomObject(GameObject *object) {
+    addValidRoomObject(object);
     objects.push_back(object);
 }
 
 bool Room::isNotValid(string *key) {
-    for (GameObject* i : validObjects) {
+    for (GameObject* i : validRoomObjects) {
         if ((*i->getKeyword()) == (*key)) {
             return false;
         }
     }
     return true;
+}
+
+list<Room*> Room::getRooms() {
+    return rooms;
+}
+
+list<GameObject *> Room::getValidRoomObjects() {
+    return validRoomObjects;
 }

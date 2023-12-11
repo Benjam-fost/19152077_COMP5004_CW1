@@ -23,9 +23,7 @@ public:
     std::list<GameObject*> &getInventory();
     void displayInventory() const;
 
-    void removeInvObject(string* key);
-    void addObject(GameObject* object);
-
+    void addInvObject(GameObject* object);
     void removeInvObject(GameObject *object);
 };
 

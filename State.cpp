@@ -5,7 +5,6 @@
 #include "State.h"
 #include "strings.h"
 #include "wordwrap.h"
-#include <iterator>
 
 /**
  * Current state of the game.
@@ -68,21 +67,10 @@ std::list<GameObject *> &State::getInventory() {
  * Adds an object to the inventory.
  * @param object
  */
-void State::addObject(GameObject* object) {
+void State::addInvObject(GameObject* object) {
     inventory.push_back(object);
 }
 
 void State::removeInvObject(GameObject* object) {
     inventory.remove(object);
 }
-/*
-void State::removeInvObject(string* key) {
-    auto ptr = inventory.begin();
-    while (ptr != inventory.end()) {
-        if ((*ptr)->getKeyword() == key) {
-            inventory.erase(ptr);
-        }
-        ptr++;
-    }
-}
-*/

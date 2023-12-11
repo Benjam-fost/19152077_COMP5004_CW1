@@ -24,6 +24,11 @@ public:
      */
     GameObject(const string *_name, const string *_key, const string *_desc);
 
+    bool operator<(const GameObject& object) const;
+    bool operator>(const GameObject& object) const;
+    bool operator==(const GameObject& object) const;
+    bool operator!=(const GameObject& object) const;
+
     /**
      * Removes a destroyed GameObject from the global list if it's there.
      */
